@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AlbionRadaro</RootNamespace>
     <AssemblyName>AlbionRadaro</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -41,26 +42,36 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Albion.Common">
-      <HintPath>C:\Users\Rafal\Desktop\Albion.Common.dll</HintPath>
+    <Reference Include="PacketDotNet, Version=1.4.7.0, Culture=neutral, PublicKeyToken=451414c7667b2a58, processorArchitecture=MSIL">
+      <HintPath>..\packages\PacketDotNet.1.4.7\lib\net47\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Base">
-      <HintPath>C:\Users\Rafal\Desktop\Nowy folder\PcapDotNet.Base.dll</HintPath>
+    <Reference Include="PhotonPackageParser, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PhotonPackageParser.4.1.0\lib\netstandard2.0\PhotonPackageParser.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Core">
-      <HintPath>C:\Users\Rafal\Desktop\Nowy folder\PcapDotNet.Core.dll</HintPath>
+    <Reference Include="Protocol16, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PhotonPackageParser.4.1.0\lib\netstandard2.0\Protocol16.dll</HintPath>
     </Reference>
-    <Reference Include="PcapDotNet.Core.Extensions">
-      <HintPath>C:\Users\Rafal\Desktop\Nowy folder\PcapDotNet.Core.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="PcapDotNet.Packets">
-      <HintPath>C:\Users\Rafal\Desktop\Nowy folder\PcapDotNet.Packets.dll</HintPath>
-    </Reference>
-    <Reference Include="Photon3DotNet">
-      <HintPath>C:\Users\Rafal\Desktop\Nowy folder\Photon3DotNet.dll</HintPath>
+    <Reference Include="SharpPcap, Version=6.3.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpPcap.6.3.0\lib\netstandard2.0\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encoding.CodePages, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.6.0.0\lib\net461\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -93,12 +104,10 @@
     <Compile Include="Mobs\MobTypes.cs" />
     <Compile Include="MouseClickMessageFilter.cs" />
     <Compile Include="AOEnums\OperationCodes.cs" />
-    <Compile Include="PacketHandler.cs" />
+    <Compile Include="PacketHandler2.cs" />
     <Compile Include="PerPixelAlphaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PhotonPacketHandler\PhotonPackageParser.cs" />
-    <Compile Include="PhotonPacketHandler\PhotonPacketHandler.cs" />
     <Compile Include="Player\Player.cs" />
     <Compile Include="Player\PlayerHandler.cs" />
     <Compile Include="Program.cs" />
@@ -127,7 +136,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -148,7 +159,15 @@
   <ItemGroup>
     <Content Include="favicon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\AOSnifferNET\AOSnifferNET\AOSnifferNET.csproj">
+      <Project>{b04c288d-0bf5-40e7-bc5e-cd097d14d07a}</Project>
+      <Name>AOSnifferNET</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PhotonPacketHandler\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

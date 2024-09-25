@@ -13,10 +13,10 @@ namespace AlbionRadaro.Mobs
         Single posX;
         Single posY;
         int health;
-        byte enchantmentLevel;
+        short enchantmentLevel;
         MobInfo mobInfo;
 
-        public Mob(int id, int typeId, Single posX, Single posY, int health, byte enchantmentLevel)
+        public Mob(int id, int typeId, Single posX, Single posY, int health, short enchantmentLevel)
         {
             this.id = id;
             this.typeId = typeId;
@@ -56,7 +56,7 @@ namespace AlbionRadaro.Mobs
             set { health = value; }
         }
 
-        public byte EnchantmentLevel
+        public short EnchantmentLevel
         {
             get { return enchantmentLevel; }
             set { enchantmentLevel = value; }

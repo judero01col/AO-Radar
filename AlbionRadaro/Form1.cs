@@ -1,6 +1,8 @@
 ﻿using AlbionRadaro.Mobs;
-using PcapDotNet.Core;
-using PcapDotNet.Packets;
+using AOSnifferNET;
+using PacketDotNet;
+using PhotonPackageParser;
+using SharpPcap;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,17 +13,20 @@ using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace AlbionRadaro
 {
     public partial class Form1 : Form
     {
-
-        PacketHandler _eventHandler;
-        PhotonPacketHandler photonPacketHandler;
+        readonly PacketReciever packetReciever;
+        //readonly PacketHandler photonParser;
+        //readonly Thread PhotonThread;
+        readonly Thread DrawerThread;
 
         PlayerHandler playerHandler = new PlayerHandler();
         HarvestableHandler harvestableHandler = new HarvestableHandler();
@@ -37,6 +42,80 @@ namespace AlbionRadaro
             mapForm.Show();
             mapForm.Left = (int)nRadarX.Value;
             mapForm.Top = (int)nRadarY.Value;
+
+            packetReciever = new PacketReciever();
+
+            packetReciever.photonParser.OnEventevLeave += PhotonParser_OnEventevLeave;
+            packetReciever.photonParser.OnEventNewMob += PhotonParser_OnEventNewMob;
+            packetReciever.photonParser.OnEventNewBuilding += PhotonParser_OnNewBuilding;
+            packetReciever.photonParser.OnEventEntityMove += PhotonParser_OnEntityMovement;
+
+            packetReciever.photonParser.OnEventHarvestableObject += PhotonParser_OnEventHarvestableObject;
+            packetReciever.photonParser.OnEventHarvestableObjectList += PhotonParser_OnEventHarvestableObjectList;
+            packetReciever.photonParser.OnEventHarvestFinished += PhotonParser_OnEventHarvestFinished;
+
+            packetReciever.photonParser.OnEventMobChangeState += PhotonParser_OnEventMobChangeState;
+            packetReciever.photonParser.OnEventJoinFinished += PhotonParser_OnEventJoinFinished;            
+
+            packetReciever.photonParser.OnRequestMove += PhotonParser_OnRequestMove;
+
+            //PhotonThread = new Thread(() => CreateListener()) { };
+            DrawerThread = new Thread(() => drawerThread()){ };
+        }
+
+        private void PhotonParser_OnEventHarvestFinished(evHarvestFinished data)
+        {
+            harvestableHandler.RemoveHarvestable(data.harvestableId);
+        }
+
+        private void PhotonParser_OnEventJoinFinished(evJoinFinished data)
+        {
+            this.harvestableHandler.HarvestableList.Clear();
+            this.mobsHandler.MobList.Clear();
+        }
+
+        private void PhotonParser_OnEventMobChangeState(evMobChangeState data)
+        {
+            mobsHandler.UpdateMobEnchantmentLevel(data.mobID, data.enchantment);
+        }
+
+        private void PhotonParser_OnEventevLeave(evLeave data)
+        {
+            playerHandler.RemovePlayer(data.entityId);
+            harvestableHandler.RemoveHarvestable(data.entityId);
+        }
+
+        private void PhotonParser_OnEventHarvestableObjectList(HarvestableObjectList dataList)
+        {
+            foreach (var data in dataList.harvestableObjectList)
+            {
+                harvestableHandler.AddHarvestable(data.id, data.type, data.tier, data.pos[0], data.pos[1], data.charges, data.enchantment);
+            }
+        }
+
+        private void PhotonParser_OnEventHarvestableObject(HarvestableObject data)
+        {
+            harvestableHandler.AddHarvestable(data.id, data.type, data.tier, data.pos[0], data.pos[1], data.charges, data.enchantment);
+        }
+
+        private void PhotonParser_OnEventNewMob(evNewMob data)
+        {
+            mobsHandler.AddMob(data.id, data.typeId, data.pos[0], data.pos[1], data.health);
+        }
+
+        private void PhotonParser_OnRequestMove(opMove data)
+        {
+            playerHandler.UpdateLocalPlayerPosition(data.pos[0], data.pos[1]);
+        }
+
+        private void PhotonParser_OnEntityMovement(Entity data)
+        {
+            playerHandler.UpdatePlayerPosition(data.ID, data.posX, data.posY);
+        }
+
+        private void PhotonParser_OnNewBuilding(evNewBuilding data)
+        {
+            
         }
 
         public static Bitmap RotateImage(Bitmap b, float angle)
@@ -61,16 +140,11 @@ namespace AlbionRadaro
         private void Form1_Load(object sender, EventArgs e)
         {
             updateSettings();
+
             try
             {
-                _eventHandler = new PacketHandler(playerHandler, harvestableHandler, mobsHandler);
-                photonPacketHandler = new PhotonPacketHandler(_eventHandler);
-
-                Thread t = new Thread(() => createListener());
-                t.Start();
-
-                Thread d = new Thread(() => drawerThread());
-                d.Start();
+                //PhotonThread.Start();
+                DrawerThread.Start();
             }
             catch (Exception ea)
             {
@@ -173,9 +247,10 @@ namespace AlbionRadaro
                         }
                         catch (Exception e1) { }
                     }
+
                     foreach (Harvestable h in hLis)
                     {
-                        if (!Settings.IsInTiers(h.Tier, h.Charges)) continue;
+                        if (!Settings.IsInTiers(h.Tier, h.Enchantment)) continue;
                         if (!Settings.IsInHarvestable((HarvestableType)h.Type)) continue;
 
                         if (h.Size == 0) continue;
@@ -191,7 +266,7 @@ namespace AlbionRadaro
                         g.TranslateTransform(-hX, -hY);
 
 
-                        if (h.Charges > 0) g.DrawEllipse(chargePen[h.Charges], hX - 3, hY - 3, 6, 6);
+                        if (h.Enchantment > 0) g.DrawEllipse(chargePen[h.Enchantment], hX - 3, hY - 3, 6, 6);
                     }
 
                     if (Settings.DisplayPeople)
@@ -303,8 +378,9 @@ namespace AlbionRadaro
             return FinalString;
         }
 
-        private void createListener()
+        private void createListener2()
         {
+            /*
             IList<LivePacketDevice> allDevices = LivePacketDevice.AllLocalMachine;
             if (allDevices.Count == 0)
             {
@@ -356,7 +432,129 @@ namespace AlbionRadaro
                 });
                 t.Start();
             }
+            */
+        }
 
+        private void CreateListener()
+        {
+
+            var allDevices = CaptureDeviceList.Instance;
+
+            if (allDevices.Count < 1)
+            {
+                throw new Exception("No interfaces found! Make sure NPcap is installed.");
+            }
+
+            List<ILiveDevice> devicesOpened = new List<ILiveDevice>();
+            Console.WriteLine("Start");
+
+            // Escuche todos los dispositivos en la máquina local.
+            foreach (ILiveDevice deviceSelected in allDevices)
+            {
+                if (!string.IsNullOrEmpty(deviceSelected.Description))
+                {
+                    if (deviceSelected.Description.ToLower().Contains("virtual"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("loopback"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("wan"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("bluetooth"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("pseudo"))
+                        continue;
+
+                    if (deviceSelected.Description.ToLower().Contains("filter"))
+                        continue;
+                }
+
+
+                Console.WriteLine($"Open... {deviceSelected.Description}");
+                deviceSelected.OnPacketArrival += PacketHandler;
+                deviceSelected.Open(DeviceModes.Promiscuous, 1);
+                deviceSelected.StartCapture();
+                devicesOpened.Add(deviceSelected);
+            }
+
+            Console.CancelKeyPress += (sender, e) =>
+            {
+                Console.WriteLine("Ctrl+C or Ctrl+Break has been pressed. Performing closing tasks...");
+
+                // Stoping Capture
+                foreach (ILiveDevice device in devicesOpened)
+                {
+                    if (device != null && device.Started)
+                    {
+                        device.StopCapture();
+                        device.OnPacketArrival -= PacketHandler;
+                        device.Close();
+                    }
+                }
+
+                e.Cancel = true;
+            };
+
+            AppDomain.CurrentDomain.DomainUnload += (sender, e) =>
+            {
+                Console.WriteLine("Managing SIGTERM. Performing closing tasks...");
+
+                // Stoping Capture
+                foreach (ILiveDevice device in devicesOpened)
+                {
+                    if (device != null && device.Started)
+                    {
+                        device.StopCapture();
+                        device.OnPacketArrival -= PacketHandler;
+                        device.Close();
+                    }
+                }
+
+                Console.WriteLine("Closure completed.");
+            };
+
+            Console.Read();
+            Console.Read();
+        }
+
+        private void PacketHandler(object sender, PacketCapture e)
+        {
+            try
+            {
+                var packet = Packet.ParsePacket(e.GetPacket().LinkLayerType, e.GetPacket().Data);
+
+                UdpPacket udp_packet = packet.Extract<UdpPacket>();
+
+                if (udp_packet != null && (udp_packet.SourcePort == 5056 || udp_packet.DestinationPort == 5056))
+                {
+                    //photonParser.ReceivePacket(udp_packet.PayloadData);
+
+                    
+                }
+                else
+                {
+                    if (udp_packet != null && (udp_packet.SourcePort == 5055 || udp_packet.DestinationPort == 5055))
+                    {
+                        if (packet.PayloadPacket is IPv4Packet ip_packet && (ip_packet.SourceAddress.ToString() == "5.188.125.60" || ip_packet.SourceAddress.ToString() == "5.45.187.118"))
+                        {
+                            var output = new StreamWriter(Console.OpenStandardOutput());
+                            output.WriteLine("[onLogin][{status:\"New Packet\"}]");
+                            output.Flush();
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                return;
+            }
         }
 
         private void updateSettings()

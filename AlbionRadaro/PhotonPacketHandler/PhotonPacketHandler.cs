@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace AlbionRadaro
 {
-    class PhotonPacketHandler
+    class PhotonPacketHandler2
     {
         PacketHandler _eventHandler;
-        public PhotonPacketHandler(PacketHandler p)
+        public PhotonPacketHandler2(PacketHandler p)
         {
             this._eventHandler = p;
         }

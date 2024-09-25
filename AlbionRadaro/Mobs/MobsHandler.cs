@@ -18,6 +18,7 @@ namespace AlbionRadaro.Mobs
         public void AddMob(int id, int typeId, Single posX, Single posY, int health)
         {
             Mob h = new Mob(id, typeId, posX, posY, health, 0);
+
             if (!mobsList.Contains(h)) {
                 mobsList.Add(h);
                 // Console.WriteLine("Add mob: " + h.ToString());
@@ -34,7 +35,7 @@ namespace AlbionRadaro.Mobs
         }
 
 
-        internal void UpdateMobEnchantmentLevel(int mobId, byte enchantmentLevel)
+        internal void UpdateMobEnchantmentLevel(int mobId, short enchantmentLevel)
         {
             mobsList.First(x => x.Id == mobId).EnchantmentLevel = enchantmentLevel;
         }

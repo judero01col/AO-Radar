@@ -8,13 +8,13 @@ using AlbionRadaro.Mobs;
 
 namespace AlbionRadaro
 {
-    class PacketHandler : IPhotonPackageHandler
+    class PacketHandler2 //: IPhotonPackageHandler
     {
         PlayerHandler playerHandler;
         HarvestableHandler harvestableHandler;
         MobsHandler mobsHandler;
 
-        public PacketHandler(PlayerHandler playerHandler, HarvestableHandler harvestableHandler, MobsHandler mobsHandler)
+        public PacketHandler2(PlayerHandler playerHandler, HarvestableHandler harvestableHandler, MobsHandler mobsHandler)
         {
             this.playerHandler = playerHandler;
             this.harvestableHandler = harvestableHandler;
@@ -181,6 +181,7 @@ namespace AlbionRadaro
             //    Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
 
             List<int> a0 = new List<int>();
+
             if (parameters[0].GetType() == typeof(Byte[]))
             {
                 Byte[] typeListByte = (Byte[])parameters[0]; //list of types
@@ -190,6 +191,7 @@ namespace AlbionRadaro
             else if (parameters[0].GetType() == typeof(Int16[]))
             {
                 Int16[] typeListByte = (Int16[])parameters[0]; //list of types
+
                 foreach (Int16 b in typeListByte)
                     a0.Add(b);
             }
@@ -198,6 +200,7 @@ namespace AlbionRadaro
                 Console.WriteLine("onNewSimpleHarvestableObjectList type error: " + parameters[0].GetType());
                 return;
             }
+
             try
             {
                 /*

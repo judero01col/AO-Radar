@@ -12,22 +12,22 @@ namespace AlbionRadaro
         private byte tier;
         private Single posX;
         private Single posY;
-        private byte charges;
         private byte size;
+        private byte enchantment;
 
-        public Harvestable(int id, byte type, byte tier, Single posX, Single posY, byte charges, byte size)
+        public Harvestable(int id, byte type, byte tier, Single posX, Single posY, byte size, byte enchantment)
         {
             this.id = id;
             this.type = type;
             this.tier = tier;
             this.posX = posX;
             this.posY = posY;
-            this.charges = charges;
             this.size = size;
+            this.enchantment = enchantment;
         }
         public override string ToString()
         {
-            return "id: " + id + " type:" + (HarvestableType)type + " tier: " + tier +  " Size: " + size +  " posX:" + posX + " posY: " + posY + " charges: " + charges;
+            return "id: " + id + " type:" + (HarvestableType)type + " tier: " + tier + " Enchantment: " + enchantment +  " posX:" + posX + " posY: " + posY + " Size: " + size;
         }
 
         public Single PosX
@@ -57,19 +57,19 @@ namespace AlbionRadaro
             set { tier = value; }
         }
 
-        public byte Charges
+        public byte Size
         {
-            get { return charges; }
-            set { charges = value; }
+            get { return size; }
+            set { size = value; }
         }
         public string GetInfo()
         {
             return (HarvestableType)type + " T: " + tier;
         }
-        public byte Size
+        public byte Enchantment
         {
-            get { return size; }
-            set { size = value; }
+            get { return enchantment; }
+            set { enchantment = value; }
         }
         public static string getMapStringInfo(HarvestableType type)
         {

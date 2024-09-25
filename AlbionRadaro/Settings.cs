@@ -108,7 +108,7 @@ namespace AlbionRadaro
         {
             displayPeople = val;
         }
-        public static bool IsInTiers(byte tier, byte enchant)
+        public static bool IsInTiers(byte tier, short enchant)
         {
             return tiers.Contains(tier+"."+enchant);
         }
