@@ -5,6 +5,8 @@ VisualStudioVersion = 17.10.34916.146
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbionRadaro", "AlbionRadaro\AlbionRadaro.csproj", "{B2402084-D713-410E-AD73-2D6CAABF32EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOSnifferNET", "AOSnifferNET\AOSnifferNET\AOSnifferNET.csproj", "{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +29,23 @@ Global
 		{B2402084-D713-410E-AD73-2D6CAABF32EC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B2402084-D713-410E-AD73-2D6CAABF32EC}.Release|x86.ActiveCfg = Release|Any CPU
 		{B2402084-D713-410E-AD73-2D6CAABF32EC}.Release|x86.Build.0 = Release|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Debug|x86.ActiveCfg = Debug|x86
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Debug|x86.Build.0 = Debug|x86
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Linux|Any CPU.ActiveCfg = Linux|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Linux|Any CPU.Build.0 = Linux|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Linux|x86.ActiveCfg = Linux|x86
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Linux|x86.Build.0 = Linux|x86
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Release|x86.ActiveCfg = Release|x86
+		{B04C288D-0BF5-40E7-BC5E-CD097D14D07A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9A2E671C-28A2-4AA2-A5F7-EF72F6BCCCF9}
 	EndGlobalSection
 EndGlobal

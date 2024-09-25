@@ -1,0 +1,3 @@
+[submodule "AOSnifferNET"]
+	path = AOSnifferNET
+	url = https://github.com/judero01col/AOSnifferNET.git
