@@ -48,10 +48,10 @@ namespace AlbionRadaro
             packetReciever.photonParser.OnEventevLeave += PhotonParser_OnEventevLeave;
             packetReciever.photonParser.OnEventNewMob += PhotonParser_OnEventNewMob;
             packetReciever.photonParser.OnEventNewBuilding += PhotonParser_OnNewBuilding;
-            packetReciever.photonParser.OnEventEntityMove += PhotonParser_OnEntityMovement;
+            packetReciever.photonParser.OnEventMove += PhotonParser_OnEventMove;
 
-            packetReciever.photonParser.OnEventHarvestableObject += PhotonParser_OnEventHarvestableObject;
-            packetReciever.photonParser.OnEventHarvestableObjectList += PhotonParser_OnEventHarvestableObjectList;
+            packetReciever.photonParser.OnEventNewHarvestableObject += PhotonParser_OnEventHarvestableObject;
+            packetReciever.photonParser.OnEventNewSimpleHarvestableObjectList += PhotonParser_OnEventHarvestableObjectList;
             packetReciever.photonParser.OnEventHarvestFinished += PhotonParser_OnEventHarvestFinished;
 
             packetReciever.photonParser.OnEventMobChangeState += PhotonParser_OnEventMobChangeState;
@@ -108,7 +108,7 @@ namespace AlbionRadaro
             playerHandler.UpdateLocalPlayerPosition(data.pos[0], data.pos[1]);
         }
 
-        private void PhotonParser_OnEntityMovement(Entity data)
+        private void PhotonParser_OnEventMove(Entity data)
         {
             playerHandler.UpdatePlayerPosition(data.ID, data.posX, data.posY);
         }
